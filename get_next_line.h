@@ -7,13 +7,12 @@
 # include <stdio.h>
 # include <stdlib.h>
 
-typedef struct s_fd
+typedef struct s_bookmark
 {
     char    init;
     int     fd;
-    int     index;
     char    remainder[100];
-} t_fd;
+} t_bookmark;
 
 char    *get_next_line(int fd);
 
