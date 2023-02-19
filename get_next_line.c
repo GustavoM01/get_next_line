@@ -2,29 +2,31 @@
 
 char    *get_next_line(int fd)
 {
-    static t_bookmark bookmark[101];
-    int         i;
-    char        found_fd;
-    char        *buf;
-    ssize_t     bytes_read;
-    char        found_nl;
-    char        *line;
-    
-    found_fd = 0;
-    i = 1;
-    bytes_read = 0;
-    found_nl = 0;
+    static t_bookmark bookmark[100]; //
+    int         i = 1; //
+    int         j = 0; //
+    int         k = 0; //
+    int         l = 0; //
+    int         m = 0; //
+    int         n = 0; //
+    int         z = 0; //
+    char        found_fd = 0; //
+    char        *buffer; //
+    ssize_t     bytes_read = 0; //
+    char        found_nl = 0; //
+    char        *line; //
+
     // Check for valid fd
     if (fd < 0)
     {
         return (NULL);
     }
     // Check init for bookmark
-    if (bookmark[0].init != 'Y' && bookmark[0].fd != -1)
+    if (bookmark[0].init != 'Y' && bookmark[0].fd != -1) // Could add chech for remainder last place equal to '/0'
     {
         bookmark[0].init = 'Y';
         bookmark[0].fd = -1;
-        while (i < 101) // Init
+        while (i < 100) // Init
         {
             bookmark[i].init = 'N';
             i++;
@@ -47,57 +49,116 @@ char    *get_next_line(int fd)
         bookmark[i].init = 'Y';
         bookmark[i].fd = fd;
         bookmark[i].remainder[0] = '\0';
+        bookmark[i].size = BUFFER_SIZE;
     }
     // Only read if fd first round or if returned full buf already
     if (bookmark[i].remainder[0] == '\0')
     {
-        buf = (char *) malloc(sizeof(char) * 100);
-        bytes_read = read(fd, buf, BUFFER_SIZE - 1);
-        buf[bytes_read] = '\0';
-        int g = 0;
-        while (buf[g] != '\0' && found_nl == 0) 
+        buffer = (char *) malloc(sizeof(char) * BUFFER_SIZE + 1); // Missing check if buffer is ok
+        bytes_read = read(fd, buffer, BUFFER_SIZE); // Missing check for read
+        buffer[bytes_read] = '\0';
+        while (l < bytes_read) 
         {
-            if (buf[g] == '\n')
+            if (buffer[j] == '\n')
             {
                 found_nl = 1;
-                line = (char *) malloc(sizeof(char) * g);
-                int h = 0;
-                while (h <= g)
+                line = (char *) malloc(sizeof(char) * j + 1);
+                line[j] = '\0';
+                while (k <= j)
                 {
-                    line[h] = buf[h];
-                    h++;
+                    line[k] = buffer[k];
+                    k++;
                 }
-                h = 0;
-                g++;
-                while (buf[g] != '\0')
+                k = 0;
+                j++;
+                while (buffer[j] != '\0')
                 {
-                    bookmark[i].remainder[h] = buf[g];
-                    g++;
-                    h++;
+                    bookmark[i].remainder[k] = buffer[j];
+                    j++;
+                    k++;
                 }
-                bookmark[i].remainder[h] = '\0';
-                free(buf);
+                bookmark[i].remainder[k] = '\0';
+                free(buffer);
                 return (line);
             }
-            g++;
+            j++;
+            l++;
         }
     } 
     else 
     {
-        int z = 0;
         while (bookmark[i].remainder[z] != '\0')
-        {
+        { 
+            if(bookmark[i].remainder[z] == '\n')
+            {
+                found_nl = 1;
+                buffer = (char *) malloc(sizeof(char) * z + 2);
+                buffer[z + 1] = '\0';
+                while (k <= z)
+                {
+                    buffer[k] = bookmark[i].remainder[k];
+                    k++;
+                }
+                k = 0;
+                z++;
+                while (bookmark[i].remainder[z + k] != '\0')
+                {
+                    bookmark[i].remainder[k] = bookmark[i].remainder[z + k];
+                    k++;
+                }
+                bookmark[i].remainder[k] = '\0';
+                return (buffer);
+            }
             z++;
         }
-        line = (char *) malloc(sizeof(char) * z);
-        z = 0;
-        while (bookmark[i].remainder[z] != '\0')
+    }
+    if (found_nl == 0)
+    {
+        while (bookmark[i].remainder[n] != '\0')
         {
-            line[z] = bookmark[i].remainder[z];
-            z++;
+            n++;
         }
-        line[z] = '\0';
-        return (line);
+        buffer = (char *) malloc((sizeof(char) * (BUFFER_SIZE)) + n + 1);
+        buffer[BUFFER_SIZE + n + 1] = '\0';
+        n = 0;
+        while (bookmark[i].remainder[n] != '\0')
+        {
+            buffer[n] = bookmark[i].remainder[n];
+            n++;
+        }
+        bytes_read = read(fd, buffer + n, BUFFER_SIZE);
+        if (bytes_read == 0)
+        {
+            return (buffer);
+        }
+        buffer[bytes_read + 2] = '\0';
+        while (l < bytes_read + 2) 
+        {
+            if (buffer[j] == '\n')
+            {
+                found_nl = 1;
+                line = (char *) malloc(sizeof(char) * j + 1);
+                line[j] = '\0';
+                while (k <= j)
+                {
+                    line[k] = buffer[k];
+                    k++;
+                }
+                k = 0;
+                j++;
+                while (buffer[j] != '\0')
+                {
+                    bookmark[i].remainder[k] = buffer[j];
+                    j++;
+                    k++;
+                }
+                bookmark[i].remainder[k] = '\0';
+                free(buffer);
+                return (line);
+            }
+            j++;
+            l++;
+        }
     }
     return (NULL);  
 }
