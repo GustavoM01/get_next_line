@@ -16,16 +16,7 @@ int main()
         printf("Error");
         return (1);
     }
-    // printf("size of size_t: %u\n", sizeof(unsigned int));
-    // printf("%u\n", UINT_MAX);
-    // printf("size of size_t: %lu\n", sizeof(size_t));
-    // printf("%lu\n", ~max);
-    // printf("size of unsigned long: %lu\n", sizeof(unsigned long));
-    // printf("%lu\n", ULONG_MAX);
-    // read(fd, buf, 50);
-    // printf("%s\n\n", buf);
-    // read(fd, buf, 50);
-    // printf("%s\n\n", buf);
+
     buf = get_next_line(fd);
     printf("%s\n", buf);
     free(buf);

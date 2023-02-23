@@ -2,7 +2,7 @@
 
 char    *get_next_line(int fd)
 {
-    static t_bookmark bookmark[100]; //
+    static t_bookmark bookmark[10]; //
     int         i = 1; //
     int         j = 0; //
     int         k = 0; //
@@ -14,7 +14,7 @@ char    *get_next_line(int fd)
     char        found_fd = 0; //
     char        *buffer; //
     ssize_t     bytes_read = 0; //
-    char        found_nl = 0; //
+    int         found_nl = 0; //
     char        *line; //
 
     // Check for valid fd
@@ -87,10 +87,16 @@ char    *get_next_line(int fd)
         }
         while (found_nl == 0)
         {
-            buffer = double_buffer(buffer, BUFFER_SIZE * o);
+            buffer = double_buffer(buffer, BUFFER_SIZE * o, fd); // 'o' its ok not being static starts at 2
             found_nl = find_next_line(buffer);
             o++;
         }
+        if (found_nl > 0)
+        {
+            buffer = line_buffer(buffer, bookmark[i].remainder, found_nl);
+            return (buffer);
+        }
+            
     } 
     else 
     {
@@ -125,8 +131,8 @@ char    *get_next_line(int fd)
         {
             n++;
         }
-        buffer = (char *) malloc((sizeof(char) * (BUFFER_SIZE)) + n + 1);
-        buffer[BUFFER_SIZE + n + 1] = '\0';
+        buffer = (char *) malloc((sizeof(char) * (BUFFER_SIZE + n + 1)));
+        buffer[BUFFER_SIZE + n] = '\0';
         n = 0;
         while (bookmark[i].remainder[n] != '\0')
         {
@@ -134,12 +140,11 @@ char    *get_next_line(int fd)
             n++;
         }
         bytes_read = read(fd, buffer + n, BUFFER_SIZE);
-        if (bytes_read == 0)
+        if (bytes_read < BUFFER_SIZE)
         {
-            return (buffer);
+            buffer[n + bytes_read] = '\0';
         }
-        buffer[bytes_read + 2] = '\0';
-        while (l < bytes_read + 2) 
+        while (l < bytes_read + n) 
         {
             if (buffer[j] == '\n')
             {
@@ -165,6 +170,17 @@ char    *get_next_line(int fd)
             }
             j++;
             l++;
+        }
+        while (found_nl == 0)
+        {
+            buffer = double_buffer(buffer, (BUFFER_SIZE * o) + n , fd); // 'o' its ok not being static starts at 2
+            found_nl = find_next_line(buffer);
+            o++;
+        }
+        if (found_nl > 0)
+        {
+            buffer = line_buffer(buffer, bookmark[i].remainder, found_nl);
+            return (buffer);
         }
     }
     return (NULL);  
