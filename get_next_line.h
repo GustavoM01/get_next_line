@@ -19,5 +19,7 @@ typedef struct s_bookmark
 } t_bookmark;
 
 char    *get_next_line(int fd);
+char    *double_buffer(char *buffer, size_t size);
+short   find_next_line(char *buffer);
 
 #endif

@@ -9,6 +9,7 @@ char    *get_next_line(int fd)
     int         l = 0; //
     int         m = 0; //
     int         n = 0; //
+    int         o = 2; //
     int         z = 0; //
     char        found_fd = 0; //
     char        *buffer; //
@@ -83,6 +84,12 @@ char    *get_next_line(int fd)
             }
             j++;
             l++;
+        }
+        while (found_nl == 0)
+        {
+            buffer = double_buffer(buffer, BUFFER_SIZE * o);
+            found_nl = find_next_line(buffer);
+            o++;
         }
     } 
     else 
