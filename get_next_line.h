@@ -3,6 +3,9 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 1000
 # endif
+# ifndef BOOKMARK_SIZE
+#  define BOOKMARK_SIZE 100
+# endif
 # define BM_SIZE 100
 # include <unistd.h>
 # include <stdio.h>
@@ -22,5 +25,6 @@ char    *get_next_line(int fd);
 char    *double_buffer(char *buffer, size_t size, int fd);
 int     find_next_line(char *buffer);
 char    *line_buffer(char *buffer, char *remainder, int found_nl);
+int bookmark_manager(t_bookmark *bookmark, int fd);
 
 #endif

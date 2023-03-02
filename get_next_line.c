@@ -2,7 +2,7 @@
 
 char    *get_next_line(int fd)
 {
-    static t_bookmark bookmark[10]; //
+    static t_bookmark bookmark[BOOKMARK_SIZE]; // what to set the size of bookmarks
     int         i = 1; //
     int         j = 0; //
     int         k = 0; //
@@ -22,6 +22,7 @@ char    *get_next_line(int fd)
     {
         return (NULL);
     }
+// PART 1
     // Check init for bookmark
     if (bookmark[0].init != 'Y' && bookmark[0].fd != -1) // Could add chech for remainder last place equal to '/0'
     {
@@ -52,6 +53,7 @@ char    *get_next_line(int fd)
         bookmark[i].remainder[0] = '\0';
         bookmark[i].size = BUFFER_SIZE;
     }
+// PART 1
     // Only read if fd first round or if returned full buf already
     if (bookmark[i].remainder[0] == '\0')
     {

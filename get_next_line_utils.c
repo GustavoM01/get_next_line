@@ -1,6 +1,6 @@
 #include "get_next_line.h"
 
-char    *gnl_main(char *buffer, size_t size, int fd, t_bookmark *)
+char    *gnl_main(char *buffer, size_t size, int fd)
 {
     char    *double_buffer;
     int     i;
@@ -81,4 +81,41 @@ char    *line_buffer(char *buffer, char *remainder, int found_nl)
     }
     remainder[i] = '\0';
     return (line_buffer);
+}
+
+int bookmark_manager(t_bookmark *bookmark, int fd)
+{
+    int i;
+    int found_fd;
+
+    i = 1;
+    found_fd = 0;
+    if (bookmark[0].init != 'Y' && bookmark[0].fd != -1) // Could add chech for remainder last place equal to '/0'
+    {
+        bookmark[0].init = 'Y';
+        bookmark[0].fd = -1;
+        while (i < BOOKMARK_SIZE)
+        {
+            bookmark[i].init = 'N';
+            i++;
+        }
+        i -= BOOKMARK_SIZE;
+    }
+    while (bookmark[i].init == 'Y' && found_fd == 0)
+    {
+        if (bookmark[i].fd == fd)
+        {
+            found_fd = 1;
+            i--;
+        }
+        i++;
+    } // 25 lines
+    if (found_fd == 0)
+    {
+        bookmark[i].init = 'Y';
+        bookmark[i].fd = fd;
+        bookmark[i].remainder[0] = '\0';
+        bookmark[i].size = BUFFER_SIZE;
+    }
+    return (i);
 }
