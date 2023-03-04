@@ -3,7 +3,7 @@
 char    *get_next_line(int fd)
 {
     static t_bookmark bookmark[BOOKMARK_SIZE]; // what to set the size of bookmarks
-    int         i = 1; //
+    int         i; //
     int         j = 0; //
     int         k = 0; //
     int         l = 0; //
@@ -22,38 +22,7 @@ char    *get_next_line(int fd)
     {
         return (NULL);
     }
-// PART 1
-    // Check init for bookmark
-    if (bookmark[0].init != 'Y' && bookmark[0].fd != -1) // Could add chech for remainder last place equal to '/0'
-    {
-        bookmark[0].init = 'Y';
-        bookmark[0].fd = -1;
-        while (i < 100) // Init
-        {
-            bookmark[i].init = 'N';
-            i++;
-        }
-        i = 1;
-    }
-    // Check for existing file descriptor
-    while (bookmark[i].init == 'Y' && found_fd == 0)
-    {
-        if (bookmark[i].fd == fd)
-        {
-            found_fd = 1;
-            i--;
-        }
-        i++;
-    }
-    // Add fd if not found on bookmark
-    if (found_fd == 0)
-    {
-        bookmark[i].init = 'Y';
-        bookmark[i].fd = fd;
-        bookmark[i].remainder[0] = '\0';
-        bookmark[i].size = BUFFER_SIZE;
-    }
-// PART 1
+    i = bookmark_manager(bookmark, fd);
     // Only read if fd first round or if returned full buf already
     if (bookmark[i].remainder[0] == '\0')
     {

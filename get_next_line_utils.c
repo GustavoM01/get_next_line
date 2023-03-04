@@ -86,36 +86,39 @@ char    *line_buffer(char *buffer, char *remainder, int found_nl)
 int bookmark_manager(t_bookmark *bookmark, int fd)
 {
     int i;
-    int found_fd;
 
     i = 1;
-    found_fd = 0;
     if (bookmark[0].init != 'Y' && bookmark[0].fd != -1) // Could add chech for remainder last place equal to '/0'
     {
         bookmark[0].init = 'Y';
         bookmark[0].fd = -1;
-        while (i < BOOKMARK_SIZE)
-        {
+        while (i++ < BOOKMARK_SIZE)
             bookmark[i].init = 'N';
-            i++;
-        }
         i -= BOOKMARK_SIZE;
     }
-    while (bookmark[i].init == 'Y' && found_fd == 0)
+    while (bookmark[i].init == 'Y')
     {
         if (bookmark[i].fd == fd)
-        {
-            found_fd = 1;
-            i--;
-        }
+            return (i);
         i++;
-    } // 25 lines
-    if (found_fd == 0)
-    {
-        bookmark[i].init = 'Y';
-        bookmark[i].fd = fd;
-        bookmark[i].remainder[0] = '\0';
-        bookmark[i].size = BUFFER_SIZE;
     }
+    bookmark[i].init = 'Y';
+    bookmark[i].fd = fd;
+    bookmark[i].remainder[0] = '\0';
     return (i);
+}
+
+char *get_line(char *buf, int fd,  t_bookmark *bookmark)
+{
+    // check if there is any remainder in the fd-bookmark
+        // YES
+            // malloc with  size (BUFFER_SIZE + remainder_size + 1)
+            // Add remainder to buf, ***including or except '/0'***
+            // empty remainder
+        // NO
+            // malloc to read.size of BUFFER_SIZE + 1
+    // check malloc ok
+    // read
+    // assign '\0' to buf[read_bytes]
+    //check buf for new line or eof
 }

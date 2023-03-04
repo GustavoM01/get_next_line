@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram name="Página-1" id="WJVSc9xlQSj55sSUPpFw">
-        <mxGraphModel dx="1360" dy="3212" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" math="0" shadow="0">
+        <mxGraphModel dx="1803" dy="3218" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#ffffff" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -316,42 +316,51 @@
                 <mxCell id="94" value="return null" style="rounded=0;whiteSpace=wrap;html=1;spacing=7;fontColor=#333333;labelBackgroundColor=#FFFFFF;fillColor=#FFFFFF;strokeColor=#666666;" parent="1" vertex="1">
                     <mxGeometry x="125" y="-1193.5" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="110" value="" style="group" vertex="1" connectable="0" parent="1">
-                    <mxGeometry x="825" y="-951" width="581" height="647" as="geometry"/>
+                <mxCell id="110" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="819" y="-987" width="606" height="647" as="geometry"/>
                 </mxCell>
-                <mxCell id="100" value="bookmark_manager" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;verticalAlign=top;spacing=8;" vertex="1" parent="110">
-                    <mxGeometry width="581" height="647" as="geometry"/>
+                <mxCell id="100" value="bookmark_manager" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;verticalAlign=top;spacing=8;" parent="110" vertex="1">
+                    <mxGeometry width="606" height="647" as="geometry"/>
                 </mxCell>
-                <mxCell id="103" value="Is it the first time gnl it's called?" style="rhombus;whiteSpace=wrap;html=1;rounded=0;labelBackgroundColor=none;strokeColor=#666666;fontFamily=Helvetica;fontSize=12;fontColor=#333333;fillColor=#FFFFFF;spacing=29;" vertex="1" parent="110">
-                    <mxGeometry x="224" y="128.5" width="154" height="147" as="geometry"/>
+                <mxCell id="103" value="Is it the first time gnl it's called?" style="rhombus;whiteSpace=wrap;html=1;rounded=0;labelBackgroundColor=none;strokeColor=#666666;fontFamily=Helvetica;fontSize=12;fontColor=#333333;fillColor=#FFFFFF;spacing=29;" parent="110" vertex="1">
+                    <mxGeometry x="227" y="75" width="154" height="147" as="geometry"/>
                 </mxCell>
-                <mxCell id="105" value="Init bookmark" style="rounded=0;whiteSpace=wrap;html=1;spacing=7;fontColor=#333333;labelBackgroundColor=#FFFFFF;fillColor=#FFFFFF;strokeColor=#666666;" vertex="1" parent="110">
-                    <mxGeometry x="13" y="172" width="120" height="60" as="geometry"/>
+                <mxCell id="105" value="Init bookmark" style="rounded=0;whiteSpace=wrap;html=1;spacing=7;fontColor=#333333;labelBackgroundColor=#FFFFFF;fillColor=#FFFFFF;strokeColor=#666666;" parent="110" vertex="1">
+                    <mxGeometry x="36" y="118.5" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="101" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#FFFFFF;strokeColor=#000000;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" edge="1" parent="110" source="103" target="105">
+                <mxCell id="101" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#FFFFFF;strokeColor=#000000;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" parent="110" source="103" target="105" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="102" value="YES" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontFamily=Helvetica;fontColor=#000000;labelBackgroundColor=#FFFFFF;" vertex="1" connectable="0" parent="101">
+                <mxCell id="102" value="YES" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontFamily=Helvetica;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="101" vertex="1" connectable="0">
                     <mxGeometry x="-0.1742" y="3" relative="1" as="geometry">
                         <mxPoint x="1" y="-2" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="108" value="Is fd already bookmarked?" style="rhombus;whiteSpace=wrap;html=1;rounded=0;labelBackgroundColor=none;strokeColor=#666666;fontFamily=Helvetica;fontSize=12;fontColor=#333333;fillColor=#FFFFFF;spacing=29;" vertex="1" parent="110">
-                    <mxGeometry x="224" y="366" width="154" height="147" as="geometry"/>
-                </mxCell>
-                <mxCell id="104" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#FFFFFF;strokeColor=#000000;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" edge="1" parent="110" source="105" target="108">
+                <mxCell id="112" value="YES" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#000000;fontColor=#000000;labelBackgroundColor=#FFFFFF;" edge="1" parent="110" source="108" target="111">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="109" value="Bookmark fd" style="rounded=0;whiteSpace=wrap;html=1;spacing=7;fontColor=#333333;labelBackgroundColor=#FFFFFF;fillColor=#FFFFFF;strokeColor=#666666;" vertex="1" parent="110">
-                    <mxGeometry x="442" y="409.5" width="120" height="60" as="geometry"/>
+                <mxCell id="108" value="Is fd already bookmarked?" style="rhombus;whiteSpace=wrap;html=1;rounded=0;labelBackgroundColor=none;strokeColor=#666666;fontFamily=Helvetica;fontSize=12;fontColor=#333333;fillColor=#FFFFFF;spacing=29;" parent="110" vertex="1">
+                    <mxGeometry x="227" y="281" width="154" height="147" as="geometry"/>
                 </mxCell>
-                <mxCell id="106" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#FFFFFF;strokeColor=#000000;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" edge="1" parent="110" source="108" target="109">
+                <mxCell id="104" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#FFFFFF;strokeColor=#000000;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" parent="110" source="105" target="108" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="107" value="NO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontFamily=Helvetica;fontColor=#000000;labelBackgroundColor=#FFFFFF;" vertex="1" connectable="0" parent="106">
+                <mxCell id="113" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#FFFFFF;strokeColor=#000000;fontColor=#000000;rounded=0;" edge="1" parent="110" source="109" target="111">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="109" value="Bookmark fd" style="rounded=0;whiteSpace=wrap;html=1;spacing=7;fontColor=#333333;labelBackgroundColor=#FFFFFF;fillColor=#FFFFFF;strokeColor=#666666;" parent="110" vertex="1">
+                    <mxGeometry x="450" y="324.5" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="106" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=#FFFFFF;strokeColor=#000000;fontFamily=Helvetica;fontSize=12;fontColor=#000000;" parent="110" source="108" target="109" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="107" value="NO" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontFamily=Helvetica;fontColor=#000000;labelBackgroundColor=#FFFFFF;" parent="106" vertex="1" connectable="0">
                     <mxGeometry x="-0.1758" y="1" relative="1" as="geometry">
                         <mxPoint as="offset"/>
                     </mxGeometry>
+                </mxCell>
+                <mxCell id="111" value="Return fd" style="rounded=0;whiteSpace=wrap;html=1;spacing=7;fontColor=#333333;labelBackgroundColor=#FFFFFF;fillColor=#FFFFFF;strokeColor=#666666;" vertex="1" parent="110">
+                    <mxGeometry x="244" y="530.5" width="120" height="60" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
