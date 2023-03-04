@@ -61,12 +61,14 @@ int	test_1 (t_bookmark *bookmark, int fd[])
 
 int	test_2 (t_bookmark *bookmark, int fd[])
 {
+	bookmark[0].fd = -1;
+	bookmark[0].init = 'Y';
 	bookmark[1].fd = 3;
 	bookmark[1].init = 'Y';
 	bookmark[2].fd = 30;
-	bookmark[1].init = 'Y';
+	bookmark[2].init = 'Y';
 	bookmark[3].fd = 300;
-	bookmark[1].init = 'Y';
+	bookmark[3].init = 'Y';
 	int found_index = 0;
 	int result = 0;
 	int i;
