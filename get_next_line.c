@@ -16,7 +16,6 @@ char    *get_next_line(int fd)
     // Read and return bf when nl is found
     buffer = get_line(fd, bookmark, i, &found_nl);
     // Save remainder after new line and change nl for '\0'
-    buffer = line_buffer(buffer, bookmark[i].remainder, found_nl);
-    free(buffer);
-    return (NULL);  
+    buffer = line_buffer(buffer, bookmark + i, found_nl);
+    return (buffer);  
 }

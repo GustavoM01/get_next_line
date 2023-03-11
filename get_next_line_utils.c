@@ -58,11 +58,12 @@ int   find_next_line(char *buffer)
     return (0);
 }
 
-char    *line_buffer(char *buffer, char *remainder, int found_nl)
+char    *line_buffer(char *buffer, t_bookmark *bm, int found_nl)
 {
     int i;
     int j;
     char    *line_buffer;
+
     i = 0;
     j = 0;
     line_buffer = (char *) malloc(sizeof(char) * found_nl + 2);
@@ -74,11 +75,12 @@ char    *line_buffer(char *buffer, char *remainder, int found_nl)
     }
     while(buffer[i] != '\0')
     {
-        remainder[j] = buffer[i];
+        bm[0].remainder[j] = buffer[i];
         i++;
         j++;
     }
-    remainder[i] = '\0';
+    bm[0].remainder[i] = '\0';
+    bm[0].size = j - 1;
     return (line_buffer);
 }
 
@@ -116,19 +118,30 @@ static char *read_manager(int fd, char *buffer, int multiplier, int shift, t_boo
 {
     char *inc_buffer;
     int i;
+    int j;
     size_t bytes_read;
 
     i = 0;
+    j = 0;
     bytes_read = 0;
     inc_buffer = (char *) malloc(sizeof(char) * ((BUFFER_SIZE * multiplier)  + shift));
     if (!inc_buffer)
         return (NULL);
+    while (bm[0].remainder[i] != '\0' && shift > 1)
+    {
+        inc_buffer[i] = bm[0].remainder[i];
+        bm[0].remainder[i] = '\0';
+        i++;
+    }
+    if (bm[0].remainder[0] == '\0')
+        bm[0].size = 0;
     if (buffer)
     {
-        while (buffer[i] != '\0')
+        while (buffer[j] != '\0')
         {
-            inc_buffer[i] = buffer[i];
+            inc_buffer[i] = buffer[j];
             i++;
+            j++;
         }        
         free(buffer);
     }
@@ -151,6 +164,7 @@ char *get_line(int fd,  t_bookmark *bookmark, int index, int *found_nl)
     shift = 1;
     multiplier = 1;
     buffer = NULL;
+    bytes_read = 0;
     if (bookmark[index].remainder[0] != '\0')
         shift += bookmark[index].size;
     while (*found_nl == 0 && bookmark[index].eof == 'N')

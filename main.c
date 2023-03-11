@@ -19,16 +19,13 @@ int main()
 
     buf = get_next_line(fd);
     printf("%s\n", buf);
-    // free(buf);
-    // buf = get_next_line(fd);
-    // printf("%s\n", buf);
-    // free(buf);
-    // buf = get_next_line(fd);
-    // printf("%s\n", buf);
-    // free(buf);
-    // buf = get_next_line(fd);
-    // printf("%s\n", buf);
-    // free(buf);
+    buf = get_next_line(fd);
+    printf("%s\n", buf);
+    buf = get_next_line(fd);
+    printf("%s\n", buf);
+    buf = get_next_line(fd);
+    printf("%s\n", buf);
+    free(buf);
     // buf = get_next_line(fd);
     // printf("%s\n", buf);
     // free(buf);

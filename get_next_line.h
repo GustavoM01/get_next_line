@@ -25,7 +25,7 @@ typedef struct s_bookmark
 char    *get_next_line(int fd);
 char    *double_buffer(char *buffer, size_t size, int fd);
 int     find_next_line(char *buffer);
-char    *line_buffer(char *buffer, char *remainder, int found_nl);
+char    *line_buffer(char *buffer, t_bookmark *bm, int found_nl);
 int bookmark_manager(t_bookmark *bookmark, int fd);
 char *get_line(int fd,  t_bookmark *bookmark, int index, int *found_nl);
 
