@@ -52,7 +52,7 @@ int   find_next_line(char *buffer)
     while (buffer[i] != '\0')
     {
         if (buffer[i] == '\n')
-            return (i);
+            return (i + 1);
         i++;
     }
     return (0);
@@ -66,9 +66,9 @@ char    *line_buffer(char *buffer, t_bookmark *bm, int found_nl)
 
     i = 0;
     j = 0;
-    line_buffer = (char *) malloc(sizeof(char) * found_nl + 2);
-    line_buffer[found_nl + 1] = '\0';
-    while(i < (found_nl + 1))
+    line_buffer = (char *) malloc(sizeof(char) * found_nl + 1);
+    line_buffer[found_nl] = '\0';
+    while(i < (found_nl))
     {
         line_buffer[i] = buffer[i];
         i++;
@@ -81,6 +81,8 @@ char    *line_buffer(char *buffer, t_bookmark *bm, int found_nl)
     }
     bm[0].remainder[i] = '\0';
     bm[0].size = j - 1;
+    if (buffer)
+        free(buffer);
     return (line_buffer);
 }
 
@@ -99,8 +101,8 @@ int bookmark_manager(t_bookmark *bookmark, int fd)
             bookmark[i].eof = 'N';
             i++;
         }
-        i -= BOOKMARK_SIZE;
     }
+    i = 1;
     while (bookmark[i].init == 'Y')
     {
         if (bookmark[i].fd == fd)
@@ -110,6 +112,7 @@ int bookmark_manager(t_bookmark *bookmark, int fd)
     bookmark[i].init = 'Y';
     bookmark[i].fd = fd;
     bookmark[i].remainder[0] = '\0';
+    bookmark[i].size = 0;
     return (i);
 }
 
@@ -146,10 +149,18 @@ static char *read_manager(int fd, char *buffer, int multiplier, int shift, t_boo
         free(buffer);
     }
     bytes_read = read(fd, inc_buffer + i, BUFFER_SIZE);
+    if (bytes_read == 0 || bytes_read == (size_t) -1)
+    {
+        if (bytes_read == 0)
+            bm[0].eof = 'Y';
+        free(inc_buffer);
+        free(buffer);
+        return (NULL);
+    }
     inc_buffer[i + bytes_read] = '\0';
     if (bytes_read == 0)
         bm[0].eof = 'Y';
-    else if (bytes_read == -1)
+    else if (bytes_read == (size_t)-1)
         bm[0].eof = 'E';
     return (inc_buffer);
 }
@@ -168,12 +179,41 @@ char *get_line(int fd,  t_bookmark *bookmark, int *found_nl)
     char *buffer;
     int shift;
     int multiplier;
+    int nl;
+    int i;
+    int j;
 
     shift = 1;
     multiplier = 1;
     buffer = NULL;
+    i = 0;
+    j = 0;
     if (bookmark[0].remainder[0] != '\0')
+    {
         shift += bookmark[0].size;
+        if ((nl = find_next_line(bookmark[0].remainder)))
+        {
+            buffer = (char *) malloc((sizeof(char) * nl) + 1);
+            buffer[nl] = '\0';
+            while (bookmark[0].remainder[i] != '\n')
+            {
+                buffer[i] = bookmark[0].remainder[i];
+                bookmark[0].remainder[i] = '\0';
+                i++;
+            }
+            buffer[i] = '\n';
+            i++;
+            while (bookmark[0].remainder[i] != '\0')
+            {
+                bookmark[0].remainder[j] = bookmark[0].remainder[i];
+                j++;
+                i++;
+            }
+            bookmark[0].remainder[j] = '\0';
+            bookmark[0].size = j;
+            return (buffer);
+        }
+    }
     while (*found_nl == 0 && bookmark[0].eof == 'N')
     {
         buffer = read_manager(fd, buffer, multiplier, shift, bookmark);
@@ -181,6 +221,53 @@ char *get_line(int fd,  t_bookmark *bookmark, int *found_nl)
             return (NULL);
         *found_nl = find_next_line(buffer);
         multiplier++;
+    }
+    return (buffer);
+}
+
+// STEP 1: check if fd exists in bookmark
+    // STEP 1A: if so -> check if there is remainder
+        // STEP 1AA: if so -> check if the is new line
+            // STEP 1AAA: if so -> update remainder and return line *** 
+    // STEP 1B: else -> do nothing
+// STEP 1: read
+// STEP 2: check read result
+// STEP 3: check if nl is found
+// STEP 3A: if so -> return line and save remainder
+// STEP 3B: else -> read again and repeat from STEP 1
+
+char *find_bm_line(t_bookmark *bm)
+{
+    char *buffer;
+    int i;
+    int j;
+
+    buffer = NULL;
+    j = 0;
+    if ((i = find_next_line(bm[0].remainder)))
+    {
+        buffer = (char *) malloc((sizeof(char) * i) + 2);
+        if (buffer)
+        {
+            buffer[i] = '\0';
+            buffer[i - 1] = '\n';
+            while (j < (i - 1))
+            {
+                buffer[j] = bm[0].remainder[j];
+                j++;
+            }
+            i++;
+            j = 0;
+            while (bm[0].remainder[i] != '\0')
+            {
+                bm[0].remainder[j] = bm[0].remainder[i];
+                i++;
+                j++;
+            }
+            j++;
+            bm[0].remainder[j] = '\0';
+            bm[0].size = j;
+        }
     }
     return (buffer);
 }
