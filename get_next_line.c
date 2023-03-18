@@ -14,7 +14,7 @@ char    *get_next_line(int fd)
     // Return saved fd info or add to bookmark
     i = bookmark_manager(bookmark, fd);
     // Read and return bf when nl is found
-    buffer = get_line(fd, bookmark, i, &found_nl);
+    buffer = get_line(fd, bookmark + i, &found_nl);
     // Save remainder after new line and change nl for '\0'
     buffer = line_buffer(buffer, bookmark + i, found_nl);
     return (buffer);  

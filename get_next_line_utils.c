@@ -127,7 +127,7 @@ static char *read_manager(int fd, char *buffer, int multiplier, int shift, t_boo
     inc_buffer = (char *) malloc(sizeof(char) * ((BUFFER_SIZE * multiplier)  + shift));
     if (!inc_buffer)
         return (NULL);
-    while (bm[0].remainder[i] != '\0' && shift > 1)
+    while (bm[0].remainder[i] != '\0')
     {
         inc_buffer[i] = bm[0].remainder[i];
         bm[0].remainder[i] = '\0';
@@ -153,23 +153,30 @@ static char *read_manager(int fd, char *buffer, int multiplier, int shift, t_boo
         bm[0].eof = 'E';
     return (inc_buffer);
 }
-
-char *get_line(int fd,  t_bookmark *bookmark, int index, int *found_nl)
+/**
+ * @brief This will return a line, which size is unknown.
+ * It uses read() as many times as it takes to find '\n' or EOF.
+ * 
+ * @param fd the file descripter used by read(). It should be a valid file descriptor.
+ * @param bookmark bookmark struct with fd information.
+ * @param found_nl where and if '\n' is found in the line. 
+ * A pointer is used to update this value in main function.
+ * @return char* that points to line.
+ */
+char *get_line(int fd,  t_bookmark *bookmark, int *found_nl)
 {
     char *buffer;
     int shift;
-    ssize_t bytes_read;
     int multiplier;
 
     shift = 1;
     multiplier = 1;
     buffer = NULL;
-    bytes_read = 0;
-    if (bookmark[index].remainder[0] != '\0')
-        shift += bookmark[index].size;
-    while (*found_nl == 0 && bookmark[index].eof == 'N')
+    if (bookmark[0].remainder[0] != '\0')
+        shift += bookmark[0].size;
+    while (*found_nl == 0 && bookmark[0].eof == 'N')
     {
-        buffer = read_manager(fd, buffer, multiplier, shift, bookmark + index);
+        buffer = read_manager(fd, buffer, multiplier, shift, bookmark);
         if (!buffer)
             return (NULL);
         *found_nl = find_next_line(buffer);
