@@ -4,13 +4,13 @@
 #  define BUFFER_SIZE 1000
 # endif
 # ifndef BOOKMARK_SIZE
-#  define BOOKMARK_SIZE 100
+#  define BOOKMARK_SIZE 20
 # endif
-# define BM_SIZE 100
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
 # include <stdint.h>
+# include <stdio.h> // DELETE
 
 typedef struct s_bookmark
 {
