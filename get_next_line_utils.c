@@ -6,7 +6,7 @@
 /*   By: gmaldona <gmaldona@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 16:46:34 by gmaldona          #+#    #+#             */
-/*   Updated: 2023/03/20 17:12:29 by gmaldona         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:27:07 by gmaldona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,29 @@ int	find_next_line(char *buffer)
 	return (0);
 }
 
-char	*fnl(char *buffer)
+char	*fnl(char *buffer, char isBm)
 {
+	int		i;
+	int		j;
+	char	*line;
 
+	i = -1;
+	j = 0;
+	line = (char *) malloc((sizeof(char) * BOOKMARK_SIZE) + 1);
+	while (buffer[++i] != '\0' && line && buffer[i] != '\n')
+		line[i] = buffer[i];
+	if (buffer[i] == '\n')
+	{
+		line[i] = '\n';
+		line[i + 1] = '\0';
+	}
+	else if (line)
+	{
+		free(line);
+		line = NULL;
+	}
+	if (isBm == 'Y')
+	return (line);
 }
 
 char	*line_buffer(char *buffer, t_bookmark *bm, int found_nl)
@@ -196,7 +216,8 @@ char	*find_bm_line(t_bookmark *bm)
 
 	buffer = NULL;
 	j = 0;
-	if ((i = find_next_line(bm[0].remainder)))
+	i = find_next_line(bm[0].remainder);
+	if (i)
 	{
 		buffer = (char *) malloc((sizeof(char) * i) + 2);
 		if (buffer)
