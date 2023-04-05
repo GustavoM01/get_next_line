@@ -14,20 +14,21 @@
 
 typedef struct s_bookmark
 {
-    char    init;
     int     fd;
     char    remainder[BUFFER_SIZE + 1];
     int     size;
-    int     index;
     char    eof;
 } t_bookmark;
 
 char    *get_next_line(int fd);
 char    *double_buffer(char *buffer, size_t size, int fd);
-int     find_next_line(char *buffer);
+int	find_nl(char *buffer, int *index);
 char    *line_buffer(char *buffer, t_bookmark *bm, int found_nl);
-int bookmark_manager(t_bookmark *bookmark, int fd);
+char *bookmark_manager(t_bookmark *bookmark, int fd, int *bm_i);
 char *get_line(int fd,  t_bookmark *bookmark, int *found_nl);
 char *find_bm_line(t_bookmark *bm);
+char	*read_mng(int fd, t_bookmark *bm);
+char	*get_buffer_line(char *buffer, t_bookmark *bm, int found_nl);
+char	*keep_reading(int fd, char *buffer, t_bookmark *bm);
 
 #endif
