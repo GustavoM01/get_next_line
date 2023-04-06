@@ -15,7 +15,7 @@
 typedef struct s_bookmark
 {
     int     fd;
-    char    remainder[BUFFER_SIZE + 1];
+    char    rmd[BUFFER_SIZE + 1];
     int     size;
     char    eof;
 } t_bookmark;
@@ -29,6 +29,6 @@ char *get_line(int fd,  t_bookmark *bookmark, int *found_nl);
 char *find_bm_line(t_bookmark *bm);
 char	*read_mng(int fd, t_bookmark *bm);
 char	*get_buffer_line(char *buffer, t_bookmark *bm, int found_nl);
-char	*keep_reading(int fd, char *buffer, t_bookmark *bm);
+char	*keep_reading(char *buffer, t_bookmark *bm, int multiplier, int buf_size);
 
 #endif
