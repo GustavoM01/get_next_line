@@ -1,186 +1,152 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: gmaldona <gmaldona@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/03/20 16:46:34 by gmaldona          #+#    #+#             */
+/*   Updated: 2023/04/29 16:22:24 by gmaldona         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
-
-
-char    *gnl_main(char *buffer, size_t size, int fd)
-{
-    char    *double_buffer;
-    int     i;
-    size_t  read_bytes;
-
-    i = 0;
-    double_buffer = malloc(sizeof(char) * size + 1);
-    double_buffer[size] = '\0';
-    if (double_buffer != NULL) {
-        while (buffer[i] != '\0')
-        {
-            double_buffer[i] = buffer[i];
-            i++;
-        }
-        free(buffer); // Check for leaks
-        read_bytes = read(fd, double_buffer + i, BUFFER_SIZE);
-    }
-    return double_buffer;
-}
-
-char    *double_buffer(char *buffer, size_t size, int fd)
-{
-    char    *double_buffer;
-    int     i;
-    size_t  read_bytes;
-
-    i = 0;
-    double_buffer = malloc(sizeof(char) * size + 1);
-    double_buffer[size] = '\0';
-    if (double_buffer != NULL) {
-        while (buffer[i] != '\0')
-        {
-            double_buffer[i] = buffer[i];
-            i++;
-        }
-        free(buffer); // Check for leaks
-        read_bytes = read(fd, double_buffer + i, BUFFER_SIZE);
-    }
-    return double_buffer;
-}
-
-
-int   find_next_line(char *buffer)
-{
-    int     i;
-
-    i = 0;
-    while (buffer[i] != '\0')
-    {
-        if (buffer[i] == '\n')
-            return (i);
-        i++;
-    }
-    return (0);
-}
-
-char    *line_buffer(char *buffer, t_bookmark *bm, int found_nl)
-{
-    int i;
-    int j;
-    char    *line_buffer;
-
-    i = 0;
-    j = 0;
-    line_buffer = (char *) malloc(sizeof(char) * found_nl + 2);
-    line_buffer[found_nl + 1] = '\0';
-    while(i < (found_nl + 1))
-    {
-        line_buffer[i] = buffer[i];
-        i++;
-    }
-    while(buffer[i] != '\0')
-    {
-        bm[0].remainder[j] = buffer[i];
-        i++;
-        j++;
-    }
-    bm[0].remainder[i] = '\0';
-    bm[0].size = j - 1;
-    return (line_buffer);
-}
-
-int bookmark_manager(t_bookmark *bookmark, int fd)
-{
-    int i;
-
-    i = 1;
-    if (bookmark[0].init != 'Y' && bookmark[0].fd != -1) // Could add chech for remainder last place equal to '/0'
-    {
-        bookmark[0].init = 'Y';
-        bookmark[0].fd = -1;
-        while (i < BOOKMARK_SIZE)
-        {
-            bookmark[i].init = 'N';
-            bookmark[i].eof = 'N';
-            i++;
-        }
-        i -= BOOKMARK_SIZE;
-    }
-    while (bookmark[i].init == 'Y')
-    {
-        if (bookmark[i].fd == fd)
-            return (i);
-        i++;
-    }
-    bookmark[i].init = 'Y';
-    bookmark[i].fd = fd;
-    bookmark[i].remainder[0] = '\0';
-    return (i);
-}
-
-
-static char *read_manager(int fd, char *buffer, int multiplier, int shift, t_bookmark *bm)
-{
-    char *inc_buffer;
-    int i;
-    int j;
-    size_t bytes_read;
-
-    i = 0;
-    j = 0;
-    bytes_read = 0;
-    inc_buffer = (char *) malloc(sizeof(char) * ((BUFFER_SIZE * multiplier)  + shift));
-    if (!inc_buffer)
-        return (NULL);
-    while (bm[0].remainder[i] != '\0')
-    {
-        inc_buffer[i] = bm[0].remainder[i];
-        bm[0].remainder[i] = '\0';
-        i++;
-    }
-    if (bm[0].remainder[0] == '\0')
-        bm[0].size = 0;
-    if (buffer)
-    {
-        while (buffer[j] != '\0')
-        {
-            inc_buffer[i] = buffer[j];
-            i++;
-            j++;
-        }        
-        free(buffer);
-    }
-    bytes_read = read(fd, inc_buffer + i, BUFFER_SIZE);
-    inc_buffer[i + bytes_read] = '\0';
-    if (bytes_read == 0)
-        bm[0].eof = 'Y';
-    else if (bytes_read == -1)
-        bm[0].eof = 'E';
-    return (inc_buffer);
-}
 /**
- * @brief This will return a line, which size is unknown.
- * It uses read() as many times as it takes to find '\n' or EOF.
- * 
- * @param fd the file descripter used by read(). It should be a valid file descriptor.
- * @param bookmark bookmark struct with fd information.
- * @param found_nl where and if '\n' is found in the line. 
- * A pointer is used to update this value in main function.
- * @return char* that points to line.
+ * @brief it works in 2 ways, it returns value, so it can be used in control
+ * structures and also assigns by reference to be able to store the value if
+ * function is used in control structure.
+ *
+ * @param buffer char * to search for '\n'
+ * @param index pointer to assign if '\n' is found, else assigns 0;
+ * @return index of '\n' if found, else return 0;
  */
-char *get_line(int fd,  t_bookmark *bookmark, int *found_nl)
+int	find_nl(char *buffer, int *index)
 {
-    char *buffer;
-    int shift;
-    int multiplier;
+	int	i;
 
-    shift = 1;
-    multiplier = 1;
-    buffer = NULL;
-    if (bookmark[0].remainder[0] != '\0')
-        shift += bookmark[0].size;
-    while (*found_nl == 0 && bookmark[0].eof == 'N')
-    {
-        buffer = read_manager(fd, buffer, multiplier, shift, bookmark);
-        if (!buffer)
-            return (NULL);
-        *found_nl = find_next_line(buffer);
-        multiplier++;
-    }
-    return (buffer);
+	i = 0;
+	while (buffer[i] != '\0')
+	{
+		if (buffer[i] == '\n')
+		{
+			*index = i + 1;
+			return (1);
+		}
+		i++;
+	}
+	*index = i + 1;
+	return (0);
+}
+
+char	*bookmark_manager(t_bookmark *bm, int fd, int *bm_i)
+{
+	char	*buffer;
+	int		nl_i;
+	int		cpy_nl_i;
+
+	buffer = NULL;
+	while (bm[*bm_i].fd > 0 && bm[*bm_i].fd != fd)
+		(*bm_i)++;
+	if (bm[*bm_i].fd == fd && bm[*bm_i].size && find_nl(bm[*bm_i].rmd, &nl_i))
+	{
+		buffer = (char *) malloc(sizeof(char) * (nl_i + 1));
+		if (buffer)
+		{
+			cpy_nl_i = nl_i - 1;
+			buffer[nl_i] = '\0';
+			while (--nl_i > -1)
+				buffer[nl_i] = bm[*bm_i].rmd[nl_i];
+			while (++cpy_nl_i < bm[*bm_i].size)
+				bm[*bm_i].rmd[++nl_i] = bm[*bm_i].rmd[cpy_nl_i];
+			bm[*bm_i].size = nl_i + 1;
+			bm[*bm_i].rmd[nl_i + 1] = '\0';
+		}
+	}
+	else
+		bm[*bm_i].fd = fd;
+	return (buffer);
+}
+
+char	*read_mng(int fd, t_bookmark *bm)
+{
+	int		read_bytes;
+	char	*buffer;
+	int		i;
+
+	i = -1;
+	buffer = (char *) malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (!buffer)
+		return (NULL);
+	read_bytes = read(fd, buffer, BUFFER_SIZE);
+	buffer[read_bytes] = '\0';
+	if (read_bytes < BUFFER_SIZE && find_nl(buffer, &i) == 0)
+	{
+		if (read_bytes <= 0 && bm[0].size == 0)
+		{
+			free(buffer);
+			return (NULL);
+		}
+		buffer = get_buffer_line(buffer, bm, read_bytes);
+	}
+	else if (find_nl(buffer, &i))
+		buffer = get_buffer_line(buffer, bm, i);
+	else
+		buffer = keep_reading(buffer, bm, 2, BUFFER_SIZE);
+	return (buffer);
+}
+
+char	*get_buffer_line(char *buffer, t_bookmark *bm, int found_nl)
+{
+	int		i;
+	int		j;
+	char	*line_buffer;
+	int		buf_size;
+
+	i = -1;
+	j = 0;
+	buf_size = found_nl + 1 + bm[0].size;
+	line_buffer = (char *) malloc(sizeof(char) * buf_size);
+	if (line_buffer)
+	{
+		line_buffer[buf_size - 1] = '\0';
+		while (++i < bm[0].size)
+			line_buffer[i] = bm[0].rmd[i];
+		while (i <= (buf_size - 2))
+			line_buffer[i++] = buffer[j++];
+		i = 0;
+		while (buffer[j] != '\0' && buffer[j - 1] != '\0')
+			bm[0].rmd[i++] = buffer[j++];
+		bm[0].rmd[i] = '\0';
+		bm[0].size = i;
+		free(buffer);
+	}
+	return (line_buffer);
+}
+
+char	*keep_reading(char *buf, t_bookmark *bm, int mlt, int b_size)
+{
+	int		i;
+	char	*inc_buf;
+	int		index;
+	int		read_bytes;
+
+	i = -1;
+	index = 0;
+	b_size += BUFFER_SIZE;
+	inc_buf = (char *) malloc(sizeof(char) * (b_size + 1));
+	while ((++i) < (b_size - BUFFER_SIZE))
+		inc_buf[i] = buf[i];
+	inc_buf[b_size] = '\0';
+	read_bytes = read(bm[0].fd, inc_buf + i, BUFFER_SIZE);
+	if (find_nl(inc_buf, &index) == 0 && read_bytes > 0)
+		inc_buf = keep_reading(inc_buf, bm, ++mlt, b_size);
+	else if (read_bytes == 0)
+	{
+		free(inc_buf);
+		return (buf);
+	}
+	else
+		inc_buf = get_buffer_line(inc_buf, bm, index);
+	free(buf);
+	return (inc_buf);
 }
