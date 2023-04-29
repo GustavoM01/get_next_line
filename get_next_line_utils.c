@@ -6,7 +6,7 @@
 /*   By: gmaldona <gmaldona@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 16:46:34 by gmaldona          #+#    #+#             */
-/*   Updated: 2023/04/29 16:22:24 by gmaldona         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:33:44 by gmaldona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
  * @param index pointer to assign if '\n' is found, else assigns 0;
  * @return index of '\n' if found, else return 0;
  */
-int	find_nl(char *buffer, int *index)
+int	static	find_nl(char *buffer, int *index)
 {
 	int	i;
 
@@ -36,6 +36,62 @@ int	find_nl(char *buffer, int *index)
 	}
 	*index = i + 1;
 	return (0);
+}
+
+char static	*get_buffer_line(char *buffer, t_bookmark *bm, int found_nl)
+{
+	int		i;
+	int		j;
+	char	*line_buffer;
+	int		buf_size;
+
+	i = -1;
+	j = 0;
+	buf_size = found_nl + 1 + bm[0].size;
+	line_buffer = (char *) malloc(sizeof(char) * buf_size);
+	if (line_buffer)
+	{
+		line_buffer[buf_size - 1] = '\0';
+		while (++i < bm[0].size)
+			line_buffer[i] = bm[0].rmd[i];
+		while (i <= (buf_size - 2))
+			line_buffer[i++] = buffer[j++];
+		i = 0;
+		while (buffer[j] != '\0' && buffer[j - 1] != '\0')
+			bm[0].rmd[i++] = buffer[j++];
+		bm[0].rmd[i] = '\0';
+		bm[0].size = i;
+		free(buffer);
+	}
+	return (line_buffer);
+}
+
+char static	*keep_reading(char *buf, t_bookmark *bm, int mlt, int b_size)
+{
+	int		i;
+	char	*inc_buf;
+	int		index;
+	int		read_bytes;
+
+	i = -1;
+	index = 0;
+	b_size += BUFFER_SIZE;
+	inc_buf = (char *) malloc(sizeof(char) * (b_size + 1));
+	while ((++i) < (b_size - BUFFER_SIZE))
+		inc_buf[i] = buf[i];
+	inc_buf[b_size] = '\0';
+	read_bytes = read(bm[0].fd, inc_buf + i, BUFFER_SIZE);
+	if (find_nl(inc_buf, &index) == 0 && read_bytes > 0)
+		inc_buf = keep_reading(inc_buf, bm, ++mlt, b_size);
+	else if (read_bytes == 0)
+	{
+		free(inc_buf);
+		return (buf);
+	}
+	else
+		inc_buf = get_buffer_line(inc_buf, bm, index);
+	free(buf);
+	return (inc_buf);
 }
 
 char	*bookmark_manager(t_bookmark *bm, int fd, int *bm_i)
@@ -93,60 +149,4 @@ char	*read_mng(int fd, t_bookmark *bm)
 	else
 		buffer = keep_reading(buffer, bm, 2, BUFFER_SIZE);
 	return (buffer);
-}
-
-char	*get_buffer_line(char *buffer, t_bookmark *bm, int found_nl)
-{
-	int		i;
-	int		j;
-	char	*line_buffer;
-	int		buf_size;
-
-	i = -1;
-	j = 0;
-	buf_size = found_nl + 1 + bm[0].size;
-	line_buffer = (char *) malloc(sizeof(char) * buf_size);
-	if (line_buffer)
-	{
-		line_buffer[buf_size - 1] = '\0';
-		while (++i < bm[0].size)
-			line_buffer[i] = bm[0].rmd[i];
-		while (i <= (buf_size - 2))
-			line_buffer[i++] = buffer[j++];
-		i = 0;
-		while (buffer[j] != '\0' && buffer[j - 1] != '\0')
-			bm[0].rmd[i++] = buffer[j++];
-		bm[0].rmd[i] = '\0';
-		bm[0].size = i;
-		free(buffer);
-	}
-	return (line_buffer);
-}
-
-char	*keep_reading(char *buf, t_bookmark *bm, int mlt, int b_size)
-{
-	int		i;
-	char	*inc_buf;
-	int		index;
-	int		read_bytes;
-
-	i = -1;
-	index = 0;
-	b_size += BUFFER_SIZE;
-	inc_buf = (char *) malloc(sizeof(char) * (b_size + 1));
-	while ((++i) < (b_size - BUFFER_SIZE))
-		inc_buf[i] = buf[i];
-	inc_buf[b_size] = '\0';
-	read_bytes = read(bm[0].fd, inc_buf + i, BUFFER_SIZE);
-	if (find_nl(inc_buf, &index) == 0 && read_bytes > 0)
-		inc_buf = keep_reading(inc_buf, bm, ++mlt, b_size);
-	else if (read_bytes == 0)
-	{
-		free(inc_buf);
-		return (buf);
-	}
-	else
-		inc_buf = get_buffer_line(inc_buf, bm, index);
-	free(buf);
-	return (inc_buf);
 }
