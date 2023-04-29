@@ -6,7 +6,7 @@
 /*   By: gmaldona <gmaldona@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/29 16:30:46 by gmaldona          #+#    #+#             */
-/*   Updated: 2023/04/29 16:30:48 by gmaldona         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:39:15 by gmaldona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,17 +19,13 @@
 #  define BOOKMARK_SIZE 20
 # endif
 # include <unistd.h>
-# include <stdio.h>
 # include <stdlib.h>
-# include <stdint.h>
-# include <stdio.h> // DELETE
 
 typedef struct s_bookmark
 {
 	int		fd;
 	char	rmd[BUFFER_SIZE + 1];
 	int		size;
-	char	eof;
 }	t_bookmark;
 
 char	*get_next_line(int fd);
