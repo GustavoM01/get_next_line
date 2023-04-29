@@ -6,20 +6,12 @@
 /*   By: gmaldona <gmaldona@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 16:46:34 by gmaldona          #+#    #+#             */
-/*   Updated: 2023/04/29 16:33:44 by gmaldona         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:41:39 by gmaldona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-/**
- * @brief it works in 2 ways, it returns value, so it can be used in control
- * structures and also assigns by reference to be able to store the value if
- * function is used in control structure.
- *
- * @param buffer char * to search for '\n'
- * @param index pointer to assign if '\n' is found, else assigns 0;
- * @return index of '\n' if found, else return 0;
- */
+
 int	static	find_nl(char *buffer, int *index)
 {
 	int	i;
