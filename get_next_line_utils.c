@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*   get_next_line_utils_bonus copy.c                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: gmaldona <gmaldona@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 16:46:34 by gmaldona          #+#    #+#             */
-/*   Updated: 2023/04/29 16:41:39 by gmaldona         ###   ########.fr       */
+/*   Updated: 2023/04/29 17:42:29 by gmaldona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,11 +121,12 @@ char	*read_mng(int fd, t_bookmark *bm)
 	char	*buffer;
 	int		i;
 
-	i = -1;
 	buffer = (char *) malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
 	read_bytes = read(fd, buffer, BUFFER_SIZE);
+	if (read_bytes < 0)
+		read_bytes = 0;
 	buffer[read_bytes] = '\0';
 	if (read_bytes < BUFFER_SIZE && find_nl(buffer, &i) == 0)
 	{
