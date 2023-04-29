@@ -6,7 +6,7 @@
 /*   By: gmaldona <gmaldona@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/20 16:46:34 by gmaldona          #+#    #+#             */
-/*   Updated: 2023/04/29 15:59:21 by gmaldona         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:22:24 by gmaldona         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,15 +86,12 @@ char	*read_mng(int fd, t_bookmark *bm)
 			free(buffer);
 			return (NULL);
 		}
-		if (read_bytes == 0)
-			read_bytes++;
 		buffer = get_buffer_line(buffer, bm, read_bytes);
 	}
-	else if (find_nl(buffer, &i) || (read_bytes < BUFFER_SIZE && bm[0].size > 0))
+	else if (find_nl(buffer, &i))
 		buffer = get_buffer_line(buffer, bm, i);
 	else
 		buffer = keep_reading(buffer, bm, 2, BUFFER_SIZE);
-
 	return (buffer);
 }
 
@@ -107,8 +104,6 @@ char	*get_buffer_line(char *buffer, t_bookmark *bm, int found_nl)
 
 	i = -1;
 	j = 0;
-	if (found_nl == 0)
-		return (buffer);
 	buf_size = found_nl + 1 + bm[0].size;
 	line_buffer = (char *) malloc(sizeof(char) * buf_size);
 	if (line_buffer)
